@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>カレンダーに参加 — Timo</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: -apple-system, "Hiragino Sans", system-ui, sans-serif;
+         max-width: 560px; margin: 0 auto; padding: 48px 20px 80px; line-height: 1.75;
+         color: #1c1c1e; background: #fff; text-align: center; }
+  a { color: #0a7aff; }
+  @media (prefers-color-scheme: dark){ body{ color:#e6e6e6; background:#111; } a{ color:#64a8ff; } }
+  h1 { font-size: 1.5rem; }
+  .code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+          font-size: 2rem; font-weight: 700; letter-spacing: .18em;
+          padding: 14px 20px; margin: 20px auto; display: inline-block;
+          background: rgba(10,122,255,.10); border-radius: 14px; user-select: all; }
+  .open { display: inline-block; margin: 12px auto 4px; padding: 14px 36px;
+          background: #0a7aff; color: #fff; border-radius: 14px;
+          font-weight: 600; text-decoration: none; font-size: 1.05rem; }
+  .muted { color: #8e8e93; font-size: .9rem; }
+  ol { text-align: left; display: inline-block; margin: 8px auto; }
+</style>
+</head>
+<body>
+
+<h1>Timo カレンダーへの招待</h1>
+<p>カレンダー共有アプリ「Timo」への招待が届いています。</p>
+
+<div id="with-code" hidden>
+  <p>招待コード</p>
+  <div class="code" id="code-box"></div><br>
+  <a class="open" id="open-app" href="#">Timo で参加する</a>
+  <p class="muted">ボタンでアプリが開かない場合は、Timo の<br>「設定 → 共有カレンダーに参加」に上のコードを入力してください。</p>
+</div>
+
+<div id="no-code" hidden>
+  <p>この招待リンクは無効です。招待した人にもう一度リンクを送ってもらってください。</p>
+</div>
+
+<hr style="border:none;border-top:1px solid rgba(128,128,128,.3);margin:40px 0">
+<p class="muted">
+  Timo は予定・旅行・思い出を大切な人と共有できるカレンダーアプリです。<br>
+  <a href="./index.html">サポート</a> ・ <a href="./privacy.html">プライバシーポリシー</a>
+</p>
+
+<script>
+  var code = (new URLSearchParams(location.search).get('code') || '').trim().toUpperCase();
+  var valid = /^[A-Z0-9]{8}$/.test(code);
+  document.getElementById(valid ? 'with-code' : 'no-code').hidden = false;
+  if (valid) {
+    document.getElementById('code-box').textContent = code;
+    var appURL = 'timo://join/' + code;
+    document.getElementById('open-app').href = appURL;
+    // ページを開いたら一度だけ自動でアプリ起動を試みる（未インストールなら何も起きない）
+    setTimeout(function () { location.href = appURL; }, 400);
+  }
+</script>
+
+</body>
+</html>
