@@ -32,7 +32,7 @@
   <p>招待コード</p>
   <div class="code" id="code-box"></div><br>
   <a class="open" id="open-app" href="#">Timo で参加する</a>
-  <p class="muted">ボタンでアプリが開かない場合は、Timo の<br>「設定 → 共有カレンダーに参加」に上のコードを入力してください。</p>
+  <p class="muted" id="fallback-hint">ボタンでアプリが開かない場合は、Timo の<br>「設定 → 共有カレンダーに参加」に上のコードを入力してください。</p>
 </div>
 
 <div id="no-code" hidden>
@@ -46,12 +46,20 @@
 </p>
 
 <script>
-  var code = (new URLSearchParams(location.search).get('code') || '').trim().toUpperCase();
+  var params = new URLSearchParams(location.search);
+  var code = (params.get('code') || '').trim().toUpperCase();
+  // kind=premium は Premium 家族プランの招待（既定は共有カレンダーの招待）
+  var isPremium = (params.get('kind') || '').toLowerCase() === 'premium';
   var valid = /^[A-Z0-9]{8}$/.test(code);
   document.getElementById(valid ? 'with-code' : 'no-code').hidden = false;
   if (valid) {
     document.getElementById('code-box').textContent = code;
-    var appURL = 'timo://join/' + code;
+    if (isPremium) {
+      document.getElementById('open-app').textContent = 'Timo の家族プランに参加する';
+      document.getElementById('fallback-hint').innerHTML =
+        'ボタンでアプリが開かない場合は、Timo の<br>「アカウント → Premium → 招待コードで参加」に上のコードを入力してください。';
+    }
+    var appURL = (isPremium ? 'timo://premium/' : 'timo://join/') + code;
     document.getElementById('open-app').href = appURL;
     // ページを開いたら一度だけ自動でアプリ起動を試みる（未インストールなら何も起きない）
     setTimeout(function () { location.href = appURL; }, 400);

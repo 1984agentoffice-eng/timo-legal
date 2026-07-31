@@ -12,9 +12,14 @@
   a { color: #0a7aff; }
   @media (prefers-color-scheme: dark){ body{ color:#e6e6e6; background:#111; } a{ color:#64a8ff; } }
   h1 { font-size: 1.6rem; } h2 { font-size: 1.15rem; margin-top: 2em; }
+  h3 { font-size: 1rem; margin-top: 1.6em; }
   .muted { color: #8e8e93; font-size: .9rem; }
   .lang { margin: 24px 0; padding: 10px 14px; background: rgba(10,122,255,.10);
           border-radius: 10px; font-size: .9rem; }
+  table { border-collapse: collapse; width: 100%; margin: 1em 0; font-size: .95rem; }
+  th, td { border: 1px solid rgba(128,128,128,.35); padding: 8px 10px; text-align: left;
+           vertical-align: top; }
+  th { background: rgba(128,128,128,.12); }
   hr { border: none; border-top: 1px solid rgba(128,128,128,.3); margin: 56px 0; }
 </style>
 </head>
@@ -22,42 +27,114 @@
 
 <!-- ============================ 日本語 ============================ -->
 <h1>プライバシーポリシー</h1>
-<p class="muted">Timo（以下「本アプリ」）／ 最終更新日: 2026年7月30日</p>
+<p class="muted">Timo（以下「本アプリ」）／ 最終更新日: 2026年7月31日</p>
 <p class="lang">English version follows below. ⬇</p>
 
-<p>本アプリは、あなたのプライバシーを最優先に設計されたカレンダーアプリです。</p>
+<p>本アプリは、カレンダーを大切な人と共有できるアプリです。
+共有と機種変更時の引き継ぎのため、<strong>予定の内容はサーバーに保存されます</strong>。
+このページでは、何が送信され、何が端末内にとどまるのかを具体的に説明します。</p>
 
-<h2>1. データの収集について</h2>
-<p><strong>本アプリは、いかなる個人情報も収集しません。</strong>
-予定・カレンダー・写真・動画・設定など、あなたが入力したすべてのデータは
-<strong>お使いの端末内にのみ保存</strong>され、端末の外に送信されることはありません。</p>
+<h2>1. 要点</h2>
+<ul>
+  <li>アカウント登録は不要です。メールアドレス・電話番号・氏名の入力を求めることはありません。</li>
+  <li>予定・カレンダー名・参加者名は、同期のためサーバーに保存されます。</li>
+  <li>写真・動画・プロフィール写真は<strong>端末内にのみ</strong>保存され、送信されません。</li>
+  <li>行動トラッキング・広告・解析 SDK は一切ありません。</li>
+  <li>位置情報を送信するのは、あなたが「旅行中の位置共有」を自分で開始したときだけです。</li>
+</ul>
 
-<h2>2. トラッキング・広告</h2>
-<p>行動トラッキングは行いません。広告は表示しません。解析 SDK・広告 SDK は組み込まれていません。</p>
+<h2>2. サーバーに保存されるデータ</h2>
 
-<h2>3. アカウント</h2>
-<p>アカウント登録は不要です。メールアドレス・電話番号・氏名などの入力を求めることはありません。</p>
+<h3>2-1. 予定とカレンダー</h3>
+<p>予定のタイトル・日時・場所・メモ・URL・繰り返し設定・参加者名・カレンダー名は、
+同期のためサーバー（Supabase, PostgreSQL）に保存されます。
+これはカレンダーを共有していない場合も同様です。機種変更時にデータを引き継げるようにすることと、
+あとから共有を始めたときに過去の予定も相手に見えるようにすることが目的です。</p>
 
-<h2>4. 写真・動画へのアクセス</h2>
-<p>予定に写真や動画を添付する際は、OS 標準のピッカー（フォトライブラリ全体へのアクセス権限を必要としない仕組み）を使用します。あなたが選択した項目だけがアプリに渡され、端末内に保存されます。</p>
+<h3>2-2. 匿名アカウント（識別子）</h3>
+<p>本アプリは初回起動時に<strong>匿名のアカウント</strong>を自動的に作成します。
+これはランダムな識別子であり、あなたの氏名・メールアドレス・電話番号とは結び付いていません。
+「どの行が誰のものか」をサーバー側で判定し、他人のデータを読めないようにするために使用します。
+この ID はアプリ内の「アカウント」→「アプリの設定」→「同期」→「利用者 ID」で確認・コピーできます。</p>
 
-<h2>5. 通知</h2>
-<p>予定のリマインダーには、端末内で完結するローカル通知のみを使用します。プッシュ通知サーバーは使用しません。</p>
+<h3>2-3. 位置情報</h3>
+<table>
+  <tr><th>機能</th><th>送信の有無</th><th>内容</th></tr>
+  <tr>
+    <td>旅行中の位置共有</td>
+    <td><strong>送信あり</strong></td>
+    <td>あなたが自分で開始したときだけ、現在地を、その共有カレンダーに参加している人へ共有します。
+        保存されるのは<strong>最新の1件のみ</strong>で、移動の履歴は残しません。旅行が終わると自動的に停止します。</td>
+  </tr>
+  <tr>
+    <td>到着・出発のお知らせ（Premium）</td>
+    <td>送信なし</td>
+    <td>登録した場所への出入りの判定は<strong>すべて端末内</strong>で行います。
+        場所も判定結果もサーバーへ送信せず、履歴も保存しません。</td>
+  </tr>
+</table>
+<p>位置情報を許可しなくても、それ以外の機能はすべてご利用いただけます。</p>
 
-<h2>6. データの保持と削除</h2>
-<p>すべてのデータは端末内にのみ存在するため、アプリを削除するとすべてのデータが消去されます。</p>
+<h3>2-4. Premium の家族プラン</h3>
+<p>家族プランを使うと、契約者と招待された方の匿名 ID・加入状態・招待コードがサーバーに保存されます。
+人数の上限（本人を含めて 4 人）をサーバー側で数えるために必要な情報です。
+購入手続きは Apple が行い、<strong>クレジットカード番号などの決済情報を本アプリが受け取ることはありません</strong>。</p>
 
-<h2>7. 将来の共有機能について</h2>
-<p>今後のバージョンで、カレンダーをほかの人と共有するための同期機能を提供する場合があります。その際は、送信されるデータの内容と目的を本ポリシーで明示し、更新します。現在のバージョンでは、データが端末外へ送信されることはありません。</p>
+<h2>3. 端末内にとどまるデータ</h2>
+<ul>
+  <li><strong>写真・動画・プロフィール写真</strong>: 予定に添付した写真や動画、プロフィール写真は端末内にのみ保存され、
+      サーバーへは送信されません。そのため、共有相手の画面にも表示されません。</li>
+  <li><strong>通知</strong>: リマインダーは端末内で完結するローカル通知です。プッシュ通知サーバーは使用しません。</li>
+  <li><strong>「スマート通知」（Premium）</strong>: 通知の文面と時刻は端末内のロジックで決めています。
+      第三者の AI サービスは使用していません。</li>
+  <li><strong>アプリの設定</strong>: 表示設定・テーマ・ピン留めなどは端末内にのみ保存されます。</li>
+</ul>
 
-<h2>8. お子さまのプライバシー</h2>
-<p>本アプリはデータを収集しないため、お子さまが使用した場合でも個人情報が収集されることはありません。</p>
+<h2>4. トラッキング・広告・解析</h2>
+<p>行動トラッキングは行いません。広告は表示しません。解析 SDK・広告 SDK は組み込んでいません。
+あなたのデータを第三者へ販売・提供することはありません。</p>
 
-<h2>9. ポリシーの変更</h2>
+<h2>5. 写真・動画へのアクセス</h2>
+<p>予定に写真や動画を添付する際は、OS 標準のピッカー（フォトライブラリ全体へのアクセス権限を必要としない仕組み）を使用します。
+あなたが選択した項目だけがアプリに渡され、端末内に保存されます。</p>
+
+<h2>6. 利用している外部サービス</h2>
+<table>
+  <tr><th>サービス</th><th>目的</th><th>送信される情報</th></tr>
+  <tr><td>Supabase</td><td>共有・同期のバックエンド</td><td>2 章に記載のデータ</td></tr>
+  <tr><td>Open-Meteo</td><td>旅行先の天気</td><td>旅行先（都市）の座標。あなたの現在地ではありません</td></tr>
+  <tr><td>Frankfurter</td><td>為替レート</td><td>通貨コードのみ（個人情報を含みません）</td></tr>
+  <tr><td>Apple マップ</td><td>地図の表示・スポット検索・住所の座標変換</td><td>検索語と表示中の地図の範囲（Apple のプライバシーポリシーに従います）</td></tr>
+  <tr><td>Apple（App 内課金）</td><td>Premium の購入・更新</td><td>購入手続きは Apple が行います</td></tr>
+</table>
+
+<h2>7. 共有相手に見える範囲</h2>
+<p>共有カレンダーに参加している人は、そのカレンダーの予定と参加者の表示名を見ることができます。
+参加していないカレンダーの予定は見られません。この制限はサーバー側の権限設定（行レベルセキュリティ）で行っています。
+招待コードは発行者がいつでも無効にでき、無効にすると、そのコードで新たに参加することはできなくなります。</p>
+
+<h2>8. データの保持と削除</h2>
+<ul>
+  <li>予定やカレンダーを削除すると「削除済み」として同期され、共有相手の端末からも見えなくなります。
+      端末内の削除の記録は 30 日後に消去されます。</li>
+  <li>アプリを削除すると、端末内のデータ（写真・動画を含む）はすべて消去されます。</li>
+  <li><strong>サーバー上のデータの完全な削除をご希望の場合</strong>は、下記のお問い合わせ先へご連絡ください。
+      本アプリはアカウント登録を行わないため、ご依頼の際は
+      「アカウント」→「アプリの設定」→「同期」→「利用者 ID」に表示される ID をお知らせください。
+      ご連絡から 30 日以内に該当データを削除します。</li>
+</ul>
+
+<h2>9. お子さまのプライバシー</h2>
+<p>本アプリは 13 歳未満のお子さまを対象としていません。
+氏名・メールアドレス・電話番号などの個人を特定する情報の入力を求めることはありませんが、
+ご自身が入力した予定の内容はサーバーに保存されます。
+お子さまがご利用になる場合は、保護者の方の管理のもとでご使用ください。</p>
+
+<h2>10. ポリシーの変更</h2>
 <p>本ポリシーは必要に応じて改定されます。重要な変更がある場合はこのページで告知します。</p>
 
-<h2>10. お問い合わせ</h2>
-<p>ご質問は <a href="mailto:1984agentoffice@gmail.com">1984agentoffice@gmail.com</a> までご連絡ください。</p>
+<h2>11. お問い合わせ</h2>
+<p>ご質問・データの削除のご依頼は <a href="mailto:1984agentoffice@gmail.com">1984agentoffice@gmail.com</a> までご連絡ください。</p>
 
 <p class="muted"><a href="./index.html">サポートページへ戻る</a></p>
 
@@ -65,41 +142,115 @@
 
 <!-- ============================ English ============================ -->
 <h1>Privacy Policy</h1>
-<p class="muted">Timo ("the App") / Last updated: July 30, 2026</p>
+<p class="muted">Timo ("the App") / Last updated: July 31, 2026</p>
 
-<p>The App is a calendar app designed with your privacy as the top priority.</p>
+<p>The App lets you share a calendar with the people who matter to you. To make sharing and device
+migration possible, <strong>your event data is stored on a server</strong>. This page explains exactly
+what is sent and what stays on your device.</p>
 
-<h2>1. Data Collection</h2>
-<p><strong>The App does not collect any personal information.</strong>
-All data you enter — events, calendars, photos, videos, and settings — is stored
-<strong>only on your device</strong> and never leaves it.</p>
+<h2>1. Summary</h2>
+<ul>
+  <li>No account registration. The App never asks for your name, email address, or phone number.</li>
+  <li>Events, calendar names, and participant names are stored on a server for synchronization.</li>
+  <li>Photos, videos, and profile pictures stay <strong>on your device only</strong> and are never uploaded.</li>
+  <li>No behavioral tracking, no ads, no analytics SDKs.</li>
+  <li>Location is transmitted only when you start "trip location sharing" yourself.</li>
+</ul>
 
-<h2>2. Tracking &amp; Advertising</h2>
-<p>No behavioral tracking. No ads. No analytics or advertising SDKs are included.</p>
+<h2>2. Data Stored on the Server</h2>
 
-<h2>3. Accounts</h2>
-<p>No account registration is required. The App never asks for your email address, phone number, or name.</p>
+<h3>2-1. Events and Calendars</h3>
+<p>Event titles, dates and times, places, notes, URLs, recurrence settings, participant names, and
+calendar names are stored on a server (Supabase, PostgreSQL) for synchronization. This applies even if
+you are not sharing a calendar, so that your data carries over to a new device and so that past events
+are visible to others if you start sharing later.</p>
 
-<h2>4. Photo &amp; Video Access</h2>
-<p>When attaching photos or videos to an event, the App uses the system picker, which does not require access to your entire photo library. Only the items you select are handed to the App and stored on your device.</p>
+<h3>2-2. Anonymous Account (Identifier)</h3>
+<p>The App automatically creates an <strong>anonymous account</strong> on first launch. It is a random
+identifier and is not tied to your name, email address, or phone number. It is used so the server can
+determine which rows belong to you and prevent anyone from reading other people's data. You can view and copy this ID in the App under
+「アカウント」(Account) → 「アプリの設定」(App Settings) → 「同期」(Sync) → 「利用者 ID」(User ID).</p>
 
-<h2>5. Notifications</h2>
-<p>Event reminders use local notifications that are scheduled entirely on your device. No push notification servers are used.</p>
+<h3>2-3. Location</h3>
+<table>
+  <tr><th>Feature</th><th>Transmitted?</th><th>Details</th></tr>
+  <tr>
+    <td>Trip location sharing</td>
+    <td><strong>Yes</strong></td>
+    <td>Only when you start it yourself, your current location is shared with the members of that shared
+        calendar. Only the <strong>latest single position</strong> is stored — no movement history. It stops
+        automatically when the trip ends.</td>
+  </tr>
+  <tr>
+    <td>Arrival / departure alerts (Premium)</td>
+    <td>No</td>
+    <td>Entering and leaving your saved places is evaluated <strong>entirely on your device</strong>.
+        Neither the places nor the results are sent to a server, and no history is kept.</td>
+  </tr>
+</table>
+<p>Every other feature works without granting location access.</p>
 
-<h2>6. Data Retention and Deletion</h2>
-<p>Because all data exists only on your device, deleting the App erases all of its data.</p>
+<h3>2-4. Premium Family Plan</h3>
+<p>When you use the family plan, the anonymous IDs, membership status, and invitation code of the
+subscriber and the invited members are stored on the server. This is required to enforce the member
+limit (four people including the subscriber) on the server side. Purchases are handled by Apple, and
+<strong>the App never receives your payment details</strong>.</p>
 
-<h2>7. Future Sharing Features</h2>
-<p>A future version may offer an optional sync feature for sharing calendars with others. If so, this policy will be updated to clearly describe what data is transmitted and why. In the current version, no data leaves your device.</p>
+<h2>3. Data That Stays on Your Device</h2>
+<ul>
+  <li><strong>Photos, videos, profile pictures</strong>: stored on your device only and never uploaded —
+      which also means they do not appear for the people you share with.</li>
+  <li><strong>Notifications</strong>: reminders are local notifications scheduled on your device. No push servers.</li>
+  <li><strong>"Smart notifications" (Premium)</strong>: wording and timing are determined by on-device logic.
+      No third-party AI service is used.</li>
+  <li><strong>App settings</strong>: display options, themes, and pinned events are stored on your device only.</li>
+</ul>
 
-<h2>8. Children's Privacy</h2>
-<p>Since the App collects no data, no personal information is collected even when used by children.</p>
+<h2>4. Tracking, Advertising, Analytics</h2>
+<p>No behavioral tracking. No ads. No analytics or advertising SDKs. We never sell or share your data
+with third parties.</p>
 
-<h2>9. Changes to This Policy</h2>
+<h2>5. Photo &amp; Video Access</h2>
+<p>When attaching photos or videos to an event, the App uses the system picker, which does not require
+access to your entire photo library. Only the items you select are handed to the App and stored on your device.</p>
+
+<h2>6. Third-Party Services</h2>
+<table>
+  <tr><th>Service</th><th>Purpose</th><th>What is sent</th></tr>
+  <tr><td>Supabase</td><td>Sharing and sync backend</td><td>The data described in section 2</td></tr>
+  <tr><td>Open-Meteo</td><td>Weather at your destination</td><td>Coordinates of the destination city — not your current location</td></tr>
+  <tr><td>Frankfurter</td><td>Exchange rates</td><td>Currency codes only (no personal data)</td></tr>
+  <tr><td>Apple Maps</td><td>Maps, place search, geocoding</td><td>Search terms and the visible map region (subject to Apple's privacy policy)</td></tr>
+  <tr><td>Apple (In-App Purchase)</td><td>Premium purchase and renewal</td><td>Purchases are handled by Apple</td></tr>
+</table>
+
+<h2>7. What People You Share With Can See</h2>
+<p>Members of a shared calendar can see that calendar's events and the display names of its members.
+They cannot see calendars they have not joined. This is enforced by server-side row level security.
+An invitation code can be revoked by its issuer at any time, after which no one new can join with it.</p>
+
+<h2>8. Data Retention and Deletion</h2>
+<ul>
+  <li>Deleting an event or calendar syncs it as "deleted" so it disappears for the people you share with.
+      The deletion record on your device is erased after 30 days.</li>
+  <li>Deleting the App erases all data on your device, including photos and videos.</li>
+  <li><strong>To request full deletion of your data from the server</strong>, contact us at the address below.
+      Because the App has no account registration, please include the ID shown in the App under
+      「アカウント」(Account) → 「アプリの設定」(App Settings) → 「同期」(Sync) → 「利用者 ID」(User ID). We will delete the corresponding data
+      within 30 days of your request.</li>
+</ul>
+
+<h2>9. Children's Privacy</h2>
+<p>The App is not directed to children under 13. It never asks for personally identifying information
+such as a name, email address, or phone number, but the event content you enter is stored on the server.
+If a child uses the App, please do so under the supervision of a parent or guardian.</p>
+
+<h2>10. Changes to This Policy</h2>
 <p>This policy may be revised as needed. Material changes will be announced on this page.</p>
 
-<h2>10. Contact</h2>
-<p>Questions? Contact <a href="mailto:1984agentoffice@gmail.com">1984agentoffice@gmail.com</a>.</p>
+<h2>11. Contact</h2>
+<p>For questions or data deletion requests, contact
+<a href="mailto:1984agentoffice@gmail.com">1984agentoffice@gmail.com</a>.</p>
 
 <p class="muted"><a href="./index.html">Back to Support</a></p>
 
