@@ -46,11 +46,27 @@
 </p>
 
 <script>
-  var params = new URLSearchParams(location.search);
-  var code = (params.get('code') || '').trim().toUpperCase();
+  // 招待コードはフラグメント（#code=...）で受け取る。
+  // フラグメントはサーバーへ送られないため、このページを配信するサーバーの
+  // アクセスログにも、外部リンクのリファラにも招待コードが残らない。
+  // 招待コードは知っている人をそのままカレンダーへ入れる鍵なので、
+  // 経路に残さないことを優先する。
+  // 以前に配ったリンク（?code=...）も引き続き受け付ける。
+  var fromHash = new URLSearchParams(location.hash.replace(/^#/, ''));
+  var fromQuery = new URLSearchParams(location.search);
+  function param(name) {
+    return (fromHash.get(name) || fromQuery.get(name) || '').trim();
+  }
+  var code = param('code').toUpperCase();
   // kind=premium は Premium 家族プランの招待（既定は共有カレンダーの招待）
-  var isPremium = (params.get('kind') || '').toLowerCase() === 'premium';
+  var isPremium = param('kind').toLowerCase() === 'premium';
   var valid = /^[A-Z0-9]{8}$/.test(code);
+  // 古い形式で開かれたら、履歴に残る URL からコードを外してフラグメントへ移す
+  if (valid && fromQuery.get('code') && window.history && history.replaceState) {
+    history.replaceState(
+      null, '',
+      location.pathname + '#code=' + code + (isPremium ? '&kind=premium' : ''));
+  }
   document.getElementById(valid ? 'with-code' : 'no-code').hidden = false;
   if (valid) {
     document.getElementById('code-box').textContent = code;
